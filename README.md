@@ -44,8 +44,8 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
 {
   "mcpServers": {
     "mcp-server-flomo": {
-      "command": "node",
-      "args": ["/path/to/mcp-server-flomo/build/index.js"],
+      "command": "npx",
+      "args": ["-y", "@chatmcp/mcp-server-flomo"],
       "env": {
         "FLOMO_API_URL": "https://flomoapp.com/iwh/xxx/xxx/"
       }

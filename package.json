@@ -1,9 +1,10 @@
 {
-  "name": "mcp-server-flomo",
-  "version": "0.1.0",
-  "description": "record notes to flomo.",
-  "private": true,
+  "name": "@chatmcp/mcp-server-flomo",
+  "version": "0.0.1",
+  "description": "write notes to flomo.",
+  "private": false,
   "type": "module",
+  "homepage": "https://github.com/chatmcp/mcp-server-flomo",
   "bin": {
     "mcp-server-flomo": "./build/index.js"
   },
