@@ -18,6 +18,7 @@
     "inspector": "npx @modelcontextprotocol/inspector build/index.js"
   },
   "dependencies": {
+    "@chatmcp/sdk": "^1.0.3",
     "@modelcontextprotocol/sdk": "0.6.0"
   },
   "devDependencies": {

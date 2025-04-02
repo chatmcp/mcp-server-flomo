@@ -13,10 +13,11 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { FlomoClient } from "./flomo.js";
+import { RestServerTransport } from "@chatmcp/sdk/server/rest.js";
 
 /**
  * Parse command line arguments
- * Example: node index.js --flomo_api_url=https://flomoapp.com/iwh/xxx/xxx/
+ * Example: node index.js --flomo_api_url=https://flomoapp.com/iwh/xxx/xxx/ --mode=rest
  */
 function parseArgs() {
   const args: Record<string, string> = {};
@@ -31,6 +32,10 @@ function parseArgs() {
 
 const args = parseArgs();
 const apiUrl = args.flomo_api_url || process.env.FLOMO_API_URL || "";
+
+const mode = args.mode || process.env.MODE || "stdio";
+const port = args.port || process.env.PORT || 9593;
+const endpoint = args.endpoint || process.env.ENDPOINT || "/rest";
 
 /**
  * Create an MCP server with capabilities for tools (to write notes to flomo).
@@ -119,8 +124,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
  * This allows the server to communicate via standard input/output streams.
  */
 async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  if (mode === "rest") {
+    const transport = new RestServerTransport({
+      port,
+      endpoint,
+    });
+    await server.connect(transport);
+
+    await transport.startServer();
+  } else {
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+  }
 }
 
 main().catch((error) => {
