@@ -18,4 +18,6 @@ ENV NODE_ENV=production
 
 RUN npm ci --ignore-scripts --omit-dev
 
+EXPOSE 9593
+
 ENTRYPOINT ["node", "build/index.js"]
