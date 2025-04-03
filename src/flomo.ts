@@ -39,7 +39,14 @@ export class FlomoClient {
         throw new Error(`request failed with status ${resp.statusText}`);
       }
 
-      return resp.json();
+      let result = await resp.json();
+
+      if (result && result.memo && result.memo.slug) {
+        const memoUrl = `https://v.flomoapp.com/mine/?memo_id=${result.memo.slug}`;
+        result.memo.url = memoUrl;
+      }
+
+      return result;
     } catch (e) {
       throw e;
     }

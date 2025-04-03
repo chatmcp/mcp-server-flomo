@@ -17,7 +17,7 @@ import { RestServerTransport } from "@chatmcp/sdk/server/rest.js";
 
 /**
  * Parse command line arguments
- * Example: node index.js --flomo_api_url=https://flomoapp.com/iwh/xxx/xxx/ --mode=rest
+ * Example: node index.js --flomo_api_url=https://flomoapp.com/iwh/xxx/xxx/
  */
 function parseArgs() {
   const args: Record<string, string> = {};
@@ -31,7 +31,7 @@ function parseArgs() {
 }
 
 const args = parseArgs();
-const apiUrl = args.flomo_api_url || process.env.FLOMO_API_URL || "";
+const flomoApiUrl = args.flomo_api_url || process.env.FLOMO_API_URL || "";
 
 const mode = args.mode || process.env.MODE || "stdio";
 const port = args.port || process.env.PORT || 9593;
@@ -56,7 +56,7 @@ const server = new Server(
  * Handler that lists available tools.
  * Exposes a single "write_note" tool that lets clients create new notes.
  */
-server.setRequestHandler(ListToolsRequestSchema, async () => {
+server.setRequestHandler(ListToolsRequestSchema, async (request) => {
   return {
     tools: [
       {
@@ -82,8 +82,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
  * Creates a new note with the content, save to flomo and returns success message.
  */
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const auth: any = await request.params?._meta?.auth;
+
   switch (request.params.name) {
     case "write_note": {
+      const apiUrl = flomoApiUrl || auth?.FLOMO_API_URL;
       if (!apiUrl) {
         throw new Error("Flomo API URL not set");
       }
@@ -102,13 +105,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         );
       }
 
-      const flomoUrl = `https://v.flomoapp.com/mine/?memo_id=${result.memo.slug}`;
-
       return {
         content: [
           {
             type: "text",
-            text: `Write note to flomo success, view it at: ${flomoUrl}`,
+            text: `Write note to flomo success, result: ${JSON.stringify(
+              result
+            )}`,
           },
         ],
       };
