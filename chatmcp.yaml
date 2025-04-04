@@ -1,0 +1,56 @@
+name: flomo
+
+params:
+  type: object
+  properties:
+    FLOMO_API_URL:
+      type: string
+      description: Flomo API URL
+  required:
+    - FLOMO_API_URL
+
+rest:
+  port: 9593
+  endpoint: /rest
+
+npx:
+  command:
+    | FLOMO_API_URL={FLOMO_API_URL} npx -y @chatmcp/mcp-server-flomo
+  config:
+    | {
+        "mcpServers": {
+          "flomo": {
+            "command": "npx",
+            "args": [
+              "-y",
+              "@chatmcp/mcp-server-flomo"
+            ],
+            "env": {
+              "FLOMO_API_URL": "YOUR_API_URL_HERE"
+            }
+          }
+        }
+      }
+
+docker:
+  command:
+    | docker run -i --rm -e FLOMO_API_URL={FLOMO_API_URL} chatmcp/flomo
+  config:
+    | {
+        "mcpServers": {
+          "flomo": {
+            "command": "docker",
+            "args": [
+              "run",
+              "-i",
+              "--rm",
+              "-e",
+              "FLOMO_API_URL",
+              "chatmcp/flomo"
+            ],
+            "env": {
+              "FLOMO_API_URL": "YOUR_API_URL_HERE"
+            }
+          }
+        }
+      }
