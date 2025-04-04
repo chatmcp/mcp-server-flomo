@@ -7,6 +7,7 @@
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { getParamValue, getAuthValue } from "@chatmcp/sdk/utils/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,
@@ -15,27 +16,11 @@ import {
 import { FlomoClient } from "./flomo.js";
 import { RestServerTransport } from "@chatmcp/sdk/server/rest.js";
 
-/**
- * Parse command line arguments
- * Example: node index.js --flomo_api_url=https://flomoapp.com/iwh/xxx/xxx/
- */
-function parseArgs() {
-  const args: Record<string, string> = {};
-  process.argv.slice(2).forEach((arg) => {
-    if (arg.startsWith("--")) {
-      const [key, value] = arg.slice(2).split("=");
-      args[key] = value;
-    }
-  });
-  return args;
-}
+const flomoApiUrl = getParamValue("flomo_api_url") || "";
 
-const args = parseArgs();
-const flomoApiUrl = args.flomo_api_url || process.env.FLOMO_API_URL || "";
-
-const mode = args.mode || process.env.MODE || "stdio";
-const port = args.port || process.env.PORT || 9593;
-const endpoint = args.endpoint || process.env.ENDPOINT || "/rest";
+const mode = getParamValue("mode") || "stdio";
+const port = getParamValue("port") || 9593;
+const endpoint = getParamValue("endpoint") || "/rest";
 
 /**
  * Create an MCP server with capabilities for tools (to write notes to flomo).
@@ -43,7 +28,7 @@ const endpoint = args.endpoint || process.env.ENDPOINT || "/rest";
 const server = new Server(
   {
     name: "mcp-server-flomo",
-    version: "0.0.1",
+    version: "0.0.3",
   },
   {
     capabilities: {
@@ -82,15 +67,13 @@ server.setRequestHandler(ListToolsRequestSchema, async (request) => {
  * Creates a new note with the content, save to flomo and returns success message.
  */
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const auth: any = await request.params?._meta?.auth;
+  const apiUrl = flomoApiUrl || getAuthValue(request, "flomo_api_url");
+  if (!apiUrl) {
+    throw new Error("Flomo API URL not set");
+  }
 
   switch (request.params.name) {
     case "write_note": {
-      const apiUrl = flomoApiUrl || auth?.FLOMO_API_URL;
-      if (!apiUrl) {
-        throw new Error("Flomo API URL not set");
-      }
-
       const content = String(request.params.arguments?.content);
       if (!content) {
         throw new Error("Content is required");
