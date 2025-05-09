@@ -1,5 +1,7 @@
 # mcp-server-flomo MCP Server
 
+[![smithery badge](https://smithery.ai/badge/@chatmcp/mcp-server-flomo)](https://smithery.ai/server/@chatmcp/mcp-server-flomo)
+
 write notes to Flomo.
 
 This is a TypeScript-based MCP server help you write notes to Flomo.
@@ -34,6 +36,14 @@ npm run watch
 ```
 
 ## Installation
+
+### Installing via Smithery
+
+To install MCP Server for Flomo for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@chatmcp/mcp-server-flomo):
+
+```bash
+npx -y @smithery/cli install @chatmcp/mcp-server-flomo --client claude
+```
 
 To use with Claude Desktop, add the server config:
 
