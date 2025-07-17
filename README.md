@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/chatmcp-mcp-server-flomo-badge.png)](https://mseep.ai/app/chatmcp-mcp-server-flomo)
+
 # mcp-server-flomo MCP Server
 
 write notes to Flomo.
